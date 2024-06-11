@@ -1,5 +1,6 @@
 package br.com.projetos.gametracker.controller;
 
+import br.com.projetos.gametracker.domain.common.League;
 import br.com.projetos.gametracker.domain.enumeration.StatusMessage;
 import br.com.projetos.gametracker.domain.request.league.LeagueRequest;
 import br.com.projetos.gametracker.domain.response.HttpMetaDataInfo;
@@ -14,13 +15,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/league")
@@ -34,8 +33,8 @@ public class LeagueController extends BaseController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LeagueResponse> create(@RequestBody @Valid LeagueRequest leagueRequest,
-                                                 BindingResult bindingResult) {
+    public ResponseEntity<LeagueResponse> createLeague(@RequestBody @Valid LeagueRequest leagueRequest,
+                                                       BindingResult bindingResult) {
 
         var response = new LeagueResponse();
         var httpInfoResponse = new HttpMetaDataInfo();
@@ -43,8 +42,7 @@ public class LeagueController extends BaseController {
         if(bindingResult.hasErrors()) {
             buildValidationFailedResponse(bindingResult, response, httpInfoResponse);
         } else {
-            var league = leagueService.create(leagueRequest);
-            response.setLeagueResultSet(new LeagueResultSet(league.getId(), league.getName()));
+            response = leagueService.createLeague(leagueRequest);
             httpInfoResponse.setStatus(StatusMessage.CREATED.getStatus());
             httpInfoResponse.setMessage(StatusMessage.CREATED.getMessage());
             httpInfoResponse.setHttpStatusCode(HttpStatus.CREATED.value());
@@ -54,9 +52,30 @@ public class LeagueController extends BaseController {
         return buildResponse(response);
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LeagueResponse> getAllLeagues(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "2") int size){
+
+        var httpMetaDataInfo = new HttpMetaDataInfo();
+        var response = leagueService.getAllLeagues(page, size);
+        var resultSet = response.getLeagueResultSet();
+
+        if(resultSet.isEmpty()) {
+            httpMetaDataInfo.setStatus(StatusMessage.NO_RESULTS.getStatus());
+            httpMetaDataInfo.setMessage(StatusMessage.NO_RESULTS.getMessage());
+        } else {
+            httpMetaDataInfo.setStatus(StatusMessage.RETRIEVED.getStatus());
+            httpMetaDataInfo.setMessage(StatusMessage.RETRIEVED.getMessage());
+        }
+
+        httpMetaDataInfo.setHttpStatusCode(HttpStatus.OK.value());
+        response.setHttpMetaDataInfo(httpMetaDataInfo);
+        return buildResponse(response);
+    }
+
     private void buildValidationFailedResponse(BindingResult bindingResult,
                                                     LeagueResponse response,
-                                                    HttpMetaDataInfo httpMetadataInfo) {
+                                                    HttpMetaDataInfo httpMetaDataInfo) {
 
         List<ErrorDetail> errors = new ArrayList<>();
 
@@ -66,11 +85,11 @@ public class LeagueController extends BaseController {
             errors.add(new ErrorDetail(field, message));
         }
 
-        httpMetadataInfo.setStatus(StatusMessage.FAILED.getStatus());
-        httpMetadataInfo.setMessage(StatusMessage.FAILED.getMessage());
-        httpMetadataInfo.setHttpStatusCode(HttpStatus.BAD_REQUEST.value());
-        httpMetadataInfo.setErrorDetails(errors);
-        response.setHttpMetaDataInfo(httpMetadataInfo);
+        httpMetaDataInfo.setStatus(StatusMessage.FAILED.getStatus());
+        httpMetaDataInfo.setMessage(StatusMessage.FAILED.getMessage());
+        httpMetaDataInfo.setHttpStatusCode(HttpStatus.BAD_REQUEST.value());
+        httpMetaDataInfo.setErrorDetails(errors);
+        response.setHttpMetaDataInfo(httpMetaDataInfo);
 
     }
 

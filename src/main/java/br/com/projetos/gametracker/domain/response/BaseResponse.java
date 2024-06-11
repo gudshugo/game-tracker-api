@@ -1,9 +1,12 @@
-package br.com.projetos.gametracker.domain.request;
+package br.com.projetos.gametracker.domain.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class BaseRequest {
+public class BaseResponse {
 
-    private String httpRes
+    @JsonProperty("httpMetaDataInfo")
+    private HttpMetaDataInfo httpMetaDataInfo = new HttpMetaDataInfo();
+
 }

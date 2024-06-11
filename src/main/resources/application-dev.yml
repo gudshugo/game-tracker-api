@@ -3,12 +3,8 @@ server:
 spring:
     application:
         name: gametracker
-    datasource:
-        driver-class-name: org.postgresql.Driver
-        password: admin
-        url: jdbc:postgresql://localhost:5432/gametracker_database
-        username: postgres
-    jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
-        hibernate:
-            ddl-auto: update
+    data:
+        mongodb:
+            host: localhost
+            port: 27017
+            database: gametracker

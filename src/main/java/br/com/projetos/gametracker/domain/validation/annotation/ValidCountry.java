@@ -1,4 +1,4 @@
-package br.com.projetos.gametracker.domain.validation;
+package br.com.projetos.gametracker.domain.validation.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,12 +8,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE})
+@Constraint(validatedBy = CountryValidator.class)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = CountryValidador.class)
 public @interface ValidCountry {
 
-    String message() default "Invalid country";
+    String message() default "Invalid country code.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 

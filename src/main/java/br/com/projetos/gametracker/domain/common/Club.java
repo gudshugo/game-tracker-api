@@ -1,35 +1,23 @@
-package br.com.projetos.gametracker.domain;
+package br.com.projetos.gametracker.domain.common;
 
-import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
-@Entity
-@Getter
-@Setter
-@EqualsAndHashCode
+
+@Data
+@Document("club")
 public class Club {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "league_id")
-    private League league;
-
-    private Date foundationDate;
-    private String country;
+    private Long leagueId;
+    private LocalDate foundationDate;
     private String city;
     private String stadiumName;
     private String stadiumCapacity;
-
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Player> currentPlayers;
 
 }

@@ -1,25 +1,16 @@
-package br.com.projetos.gametracker.domain;
+package br.com.projetos.gametracker.domain.common;
 
-import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
-@Entity
-@Getter
-@Setter
-@EqualsAndHashCode
+@Document("league")
+@Data
 public class League {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String id;
     private String name;
-
-    @OneToMany(mappedBy = "league", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Club> leagueClubs;
+    private String country;
 
 }
