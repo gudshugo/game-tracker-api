@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +50,20 @@ public class LeagueServiceImpl implements LeagueService {
 
         leagueResponse.setLeagueResultSet(buildLeagueResultSetResponse(pageResult.getContent()));
         leagueResponse.setPagination(new Pagination(page, size, pageResult.getTotalPages(), pageResult.getTotalElements()));
+
+        return leagueResponse;
+    }
+
+    @Override
+    public LeagueResponse getLeagueDetails(String id) {
+        var leagueResponse = new LeagueResponse();
+
+        Optional<League> dbLeague = leagueRepository.findById(id);
+
+        if(dbLeague.isPresent()){
+            League league = dbLeague.get();
+            leagueResponse.setLeagueResultSet(buildLeagueResultSetResponse(List.of(league)));
+        }
 
         return leagueResponse;
     }

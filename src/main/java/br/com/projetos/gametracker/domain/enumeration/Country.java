@@ -4,7 +4,8 @@ public enum Country {
 
     BRA("BRA", "Brazil"),
     ARG("ARG", "Argentina"),
-    GER("GER", "Germany");
+    GER("GER", "Germany"),
+    POR("POR", "Portugal");
 
     private final String code;
     private final String description;

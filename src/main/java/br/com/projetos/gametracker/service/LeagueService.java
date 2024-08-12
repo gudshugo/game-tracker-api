@@ -12,4 +12,5 @@ public interface LeagueService {
 
     LeagueResponse getAllLeagues(int page, int size);
 
+    LeagueResponse getLeagueDetails(String id);
 }

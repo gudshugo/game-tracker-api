@@ -54,43 +54,17 @@ public class LeagueController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LeagueResponse> getAllLeagues(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "2") int size){
-
-        var httpMetaDataInfo = new HttpMetaDataInfo();
+                                                        @RequestParam(defaultValue = "2") int size) {
         var response = leagueService.getAllLeagues(page, size);
-        var resultSet = response.getLeagueResultSet();
-
-        if(resultSet.isEmpty()) {
-            httpMetaDataInfo.setStatus(StatusMessage.NO_RESULTS.getStatus());
-            httpMetaDataInfo.setMessage(StatusMessage.NO_RESULTS.getMessage());
-        } else {
-            httpMetaDataInfo.setStatus(StatusMessage.RETRIEVED.getStatus());
-            httpMetaDataInfo.setMessage(StatusMessage.RETRIEVED.getMessage());
-        }
-
-        httpMetaDataInfo.setHttpStatusCode(HttpStatus.OK.value());
-        response.setHttpMetaDataInfo(httpMetaDataInfo);
+        buildGetResponse(response);
         return buildResponse(response);
     }
 
-    private void buildValidationFailedResponse(BindingResult bindingResult,
-                                                    LeagueResponse response,
-                                                    HttpMetaDataInfo httpMetaDataInfo) {
-
-        List<ErrorDetail> errors = new ArrayList<>();
-
-        for(FieldError error : bindingResult.getFieldErrors()) {
-            String field = error.getField();
-            String message = error.getDefaultMessage();
-            errors.add(new ErrorDetail(field, message));
-        }
-
-        httpMetaDataInfo.setStatus(StatusMessage.FAILED.getStatus());
-        httpMetaDataInfo.setMessage(StatusMessage.FAILED.getMessage());
-        httpMetaDataInfo.setHttpStatusCode(HttpStatus.BAD_REQUEST.value());
-        httpMetaDataInfo.setErrorDetails(errors);
-        response.setHttpMetaDataInfo(httpMetaDataInfo);
-
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LeagueResponse> getLeagueDetails(@PathVariable String id) {
+        var response = leagueService.getLeagueDetails(id);
+        buildGetResponse(response);
+        return buildResponse(response);
     }
 
 }

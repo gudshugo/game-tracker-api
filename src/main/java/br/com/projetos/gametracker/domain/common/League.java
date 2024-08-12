@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document("league")
 @Data
 public class League {
@@ -12,5 +14,6 @@ public class League {
     private String id;
     private String name;
     private String country;
+    private List<Club> clubs;
 
 }
